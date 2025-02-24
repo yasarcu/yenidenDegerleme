@@ -41,14 +41,14 @@
             2012: 7.80, 2013: 3.93, 2014: 10.11, 2015: 5.58,
             2016: 3.83, 2017: 14.47, 2018: 23.73, 2019: 22.58,
             2020: 9.11, 2021: 36.20, 2022: 122.93, 2023: 58.46,
-            2024: 43.93
+            2024: 43.93,2025: 0
         };
 
         function createTable() {
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            for(let year = 2000; year <= 2024; year++) {
+            for(let year = 2000; year <= 2025; year++) {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${year}</td>
@@ -60,14 +60,24 @@
             }
 
             // Event listener'ları ekle
-            tbody.querySelectorAll('.ipc-input').forEach(input => {
-                input.addEventListener('input', function(e) {
-                    updateCurrentRow(e.target);
+            tbody.querySelectorAll('.ipc-input').forEach((input, index) => {
+                input.addEventListener('focus', function(e) {
+                    e.target.value = '';
+                });
+
+                input.addEventListener('blur', function(e) {
+                    updateCurrentRow(e.target, index);
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.target.blur();
+                    }
                 });
             });
 
             // İlk hesaplamayı yap
-            updateAllCalculations();
+            updateAllCalculations(0);
         }
 
         function parseTurkishNumber(value) {
@@ -83,25 +93,28 @@
         }
 
         // Mevcut satırı güncelle
-        function updateCurrentRow(input) {
+        function updateCurrentRow(input, index) {
             const row = input.closest('tr');
             const rawValue = parseTurkishNumber(input.value) || 0;
-            const roundedValue = Math.round(rawValue);
+            const flooredValue = Math.floor(rawValue);
             
-            // Aynı satırdaki Tam Lira'yı güncelle
+            //Aynı satırdaki Tam Lira'yı güncelle
             row.querySelector('.rounded-value').textContent = 
-                new Intl.NumberFormat('tr-TR').format(roundedValue);
-            input.value = formatTurkishNumber(roundedValue);
+                new Intl.NumberFormat('tr-TR').format(flooredValue);
+            input.value = formatTurkishNumber(flooredValue);
+
+            // Tüm hesaplamaları yeniden yap
+            updateAllCalculations(index);
         }
 
         // Tüm hesaplamaları yeniden yap
-        function updateAllCalculations() {
+        function updateAllCalculations(startIndex) {
             const rows = document.querySelectorAll('#tableBody tr');
-            let currentValue = parseTurkishNumber(rows[0].querySelector('.ipc-input').value);
+            let currentValue = parseTurkishNumber(rows[startIndex].querySelector('.ipc-input').value);
             
-            for(let i = 1; i < rows.length; i++) {
+            for(let i = startIndex + 1; i < rows.length; i++) {
                 const rate = officialRates[2000 + i - 1] / 100;
-                currentValue = Math.round(currentValue * (1 + rate));
+                currentValue = Math.floor(currentValue * (1 + rate));
                 
                 const input = rows[i].querySelector('.ipc-input');
                 const roundedCell = rows[i].querySelector('.rounded-value');
