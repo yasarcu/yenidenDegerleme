@@ -12,13 +12,13 @@
         th { background-color: #4CAF50; color: white; font-weight: bold; }
         tr:nth-child(even) { background-color: #f9f9f9; }
         tr:hover { background-color: #f1f1f1; }
-        .ipc-input { width: 150px; padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
-        .highlight { background-color: #e8f5e9; font-weight: bold; }
+        .ipc-input { width: 150px; padding: 6px; border: 1px solid #ccc; border-radius: 14px;text-align: center;font-size: larger;font-weight: bold; }
+        .highlight { background-color: #e8f5e9; font-weight: bold; text-align: center; }
         .currency { color: #2e7d32; }
     </style>
 </head>
 <body>
-    <h2 style="color: #2e7d32; margin-bottom: 20px;">İdari Para Cezası Hesaplayıcı (2000-2024)</h2>
+    <h2 style="color: #2e7d32; margin-bottom: 20px;">İdari Para Cezası Hesaplayıcı (2000-2025)</h2>
     <table>
         <thead>
             <tr>
@@ -62,7 +62,7 @@
             // Event listener'ları ekle
             tbody.querySelectorAll('.ipc-input').forEach((input, index) => {
                 input.addEventListener('focus', function(e) {
-                    e.target.value = '';
+                    e.target.select();
                 });
 
                 input.addEventListener('blur', function(e) {
