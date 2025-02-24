@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yeniden Değerleme Tablosu 1990-2024</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Yeniden Değerleme Tablosu (1990-2024)</h1>
+        <p>TÜİK verilerine göre güncellenmiştir</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tarih</th>
+                <th>Maddede Yazılı Para Cezası</th>
+                <th>Yeniden Değerleme Oranı</th>
+                <th>Toplam Artış</th>
+                <th>Genel Toplam</th>
+                <th>İndirimli Tutar</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- Data will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        const revaluationData = [
+            { year: 1990, rate: 55.50 },
+            { year: 1991, rate: 54.10 },
+            { year: 1992, rate: 61.50 },
+            { year: 1993, rate: 58.40 },
+            { year: 1994, rate: 107.60 },
+            { year: 1995, rate: 99.50 },
+            { year: 1996, rate: 72.80 },
+            { year: 1997, rate: 80.40 },
+            { year: 1998, rate: 77.80 },
+            { year: 1999, rate: 52.10 },
+            { year: 2000, rate: 56.00 },
+            { year: 2001, rate: 53.20 },
+            { year: 2002, rate: 59.00 },
+            { year: 2003, rate: 28.50 },
+            { year: 2004, rate: 11.20 },
+            { year: 2005, rate: 9.80 },
+            { year: 2006, rate: 7.80 },
+            { year: 2007, rate: 7.20 },
+            { year: 2008, rate: 12.00 },
+            { year: 2009, rate: 2.20 },
+            { year: 2010, rate: 7.70 },
+            { year: 2011, rate: 10.26 },
+            { year: 2012, rate: 7.80 },
+            { year: 2013, rate: 3.93 },
+            { year: 2014, rate: 10.11 },
+            { year: 2015, rate: 5.58 },
+            { year: 2016, rate: 3.83 },
+            { year: 2017, rate: 14.47 },
+            { year: 2018, rate: 23.73 },
+            { year: 2019, rate: 22.58 },
+            { year: 2020, rate: 9.11 },
+            { year: 2021, rate: 36.20 },
+            { year: 2022, rate: 122.93 },
+            { year: 2023, rate: 58.46 },
+            { year: 2024, rate: 43.93 }
+        ];
+
+        function formatNumber(num) {
+            return new Intl.NumberFormat('tr-TR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(num);
+        }
+
+        /**
+         * Calculate revaluation values with validation and error handling
+         * @param {number} base - Base amount to calculate from
+         * @param {number} rate - Percentage rate for revaluation
+         * @returns {Object} Calculated values with formatting
+         * @throws {Error} If inputs are invalid
+         */
+        function calculateValues(base, rate) {
+            // Input validation
+            if (!Number.isFinite(base) || !Number.isFinite(rate)) {
+                throw new Error('Invalid input values - must be numbers');
+            }
+            if (base < 0 || rate < 0) {
+                throw new Error('Negative values not allowed');
+            }
+
+            // Use descriptive variable names
+            const baseAmount = base;
+            const revaluationRate = rate / 100;
+            
+            // Calculate values with clear mathematical expressions
+            const totalIncrease = baseAmount * revaluationRate;
+            const totalAfterRevaluation = baseAmount + totalIncrease;
+            const discountedAmount = totalAfterRevaluation * 0.75;
+
+            return {
+                totalIncrease,
+                total: totalAfterRevaluation,
+                discounted: discountedAmount
+            };
+        }
+
+        function updateRow(row, baseValue) {
+            const rate = parseFloat(row.dataset.rate);
+            const { totalIncrease, total, discounted } = calculateValues(baseValue, rate);
+            
+            row.cells[3].textContent = `${formatNumber(totalIncrease)} TL`;
+            row.cells[4].textContent = `${formatNumber(total)} TL`;
+            row.cells[5].textContent = `${formatNumber(discounted)} TL`;
+        }
+
+        const tbody = document.getElementById('tableBody');
+        revaluationData.forEach((data, index) => {
+            const row = document.createElement('tr');
+            const initialBase = index === 0 ? 100 : 0; // Start with 100 for first year
+            row.dataset.rate = data.rate;
+            
+            row.innerHTML = `
+                <td>${data.year}</td>
+                <td><input type="number" value="${initialBase}"
+                       style="width: 100px"
+                       oninput="updateRow(this.parentElement.parentElement, parseFloat(this.value))"> TL</td>
+                <td>${data.rate.toFixed(2)}%</td>
+                <td>${formatNumber(0)} TL</td>
+                <td>${formatNumber(0)} TL</td>
+                <td>${formatNumber(0)} TL</td>
+            `;
+            
+            // Set initial values
+            if (index === 0) {
+                updateRow(row, initialBase);
+            }
+            
+            tbody.appendChild(row);
+        });
+    </script>
+</body>
+</html>
