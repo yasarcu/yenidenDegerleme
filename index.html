@@ -14,6 +14,7 @@
         .ipc-input { width: 150px; padding: 6px; border: 1px solid #ccc; border-radius: 14px; text-align: center; font-size: larger; font-weight: bold; }
         .highlight { background-color: #e8f5e9; font-weight: bold; text-align: center; }
         .currency { color: #2e7d32; }
+        .red { color: red; }
     </style>
 </head>
 <body>
@@ -104,6 +105,15 @@
 
             // Tüm hesaplamaları yeniden yap
             updateAllCalculations(index);
+
+            // Tüm hücrelerin kırmızı rengini kaldır
+            document.querySelectorAll('.ipc-input, .rounded-value').forEach(cell => {
+                cell.classList.remove('red');
+            });
+
+            // Son girilen veriyi kırmızı yap
+            input.classList.add('red');
+            row.querySelector('.rounded-value').classList.add('red');
         }
 
         // Tüm hesaplamaları yeniden yap
