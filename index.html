@@ -119,7 +119,7 @@
                 const roundedCell = rows[i].querySelector('.rounded-value');
                 
                 input.value = formatTurkishNumber(currentValue) + ' ₺';
-                roundedCell.textContent = new Intl.NumberFormat('tr-TR').format(currentValue * 0.75) + ' ₺';
+                roundedCell.textContent = new Intl.NumberFormat('tr-TR').format(Math.floor(currentValue * 0.75)) + ' ₺';
             }
         }
 
