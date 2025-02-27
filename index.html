@@ -97,10 +97,11 @@
             const row = input.closest('tr');
             const rawValue = parseTurkishNumber(input.value) || 0;
             const flooredValue = Math.floor(rawValue);
-            
+            const oldValue = parseTurkishNumber(row.querySelector('.rounded-value').textContent.replace(' ₺', ''));
+
             // Aynı satırdaki Tam Lira'yı güncelle (%75 oranında)
-            row.querySelector('.rounded-value').textContent = 
-                new Intl.NumberFormat('tr-TR').format(flooredValue * 0.75) + ' ₺';
+            const newValue = Math.floor(flooredValue * 0.75);
+            row.querySelector('.rounded-value').textContent = new Intl.NumberFormat('tr-TR').format(newValue) + ' ₺';
             input.value = formatTurkishNumber(flooredValue);
 
             // Tüm hesaplamaları yeniden yap
@@ -111,9 +112,11 @@
                 cell.classList.remove('red');
             });
 
-            // Son girilen veriyi kırmızı yap
-            input.classList.add('red');
-            row.querySelector('.rounded-value').classList.add('red');
+            // Son girilen veriyi kırmızı yap, eğer değer değiştiyse
+            if (oldValue !== Math.floor(newValue)) {
+                input.classList.add('red');
+                row.querySelector('.rounded-value').classList.add('red');
+            }
         }
 
         // Tüm hesaplamaları yeniden yap
